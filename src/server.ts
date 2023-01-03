@@ -16,9 +16,10 @@ const app = express();
 app.use(express.json()); //add JSON body parser to each following route handler
 app.use(cors()); //add CORS support to each following route handler
 
-
 app.get("/", async (req, res) => {
-  res.json({ msg: "Hello! There's nothing interesting for GET /" });
+  res.json({
+    msg: "Hello! There's nothing interesting for GET except ogres with onions/",
+  });
 });
 
 app.get("/health-check", async (req, res) => {
@@ -33,6 +34,14 @@ app.get("/health-check", async (req, res) => {
   }
 });
 
+app.get("/pastes", async (req, res) => {
+  const text = "select * from pasteBin";
+  const dbResponse = await client.query(text);
+  res.status(200).json({
+    status: "success",
+    data: dbResponse.rows,
+  });
+});
 connectToDBAndStartListening();
 
 async function connectToDBAndStartListening() {
