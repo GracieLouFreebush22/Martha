@@ -37,7 +37,7 @@ app.get("/health-check", async (req, res) => {
 });
 
 app.get("/pastes", async (req, res) => {
-  const text = "select * from pasteBin";
+  const text = "select * from pasteBin order by id desc limit 10";
   const dbResponse = await client.query(text);
   res.status(200).json({
     status: "success",
