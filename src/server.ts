@@ -6,6 +6,7 @@ import { RowDescriptionMessage } from "pg-protocol/dist/messages";
 import { getEnvVarOrFail } from "./support/envVarUtils";
 import { setupDBClientConfig } from "./support/setupDBClientConfig";
 //hey its katrinas
+//comment for push
 dotenv.config(); //Read .env file lines as though they were env vars.
 
 const dbClientConfig = setupDBClientConfig();
