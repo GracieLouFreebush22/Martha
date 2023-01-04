@@ -2,6 +2,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import { Client } from "pg";
+import { RowDescriptionMessage } from "pg-protocol/dist/messages";
 import { getEnvVarOrFail } from "./support/envVarUtils";
 import { setupDBClientConfig } from "./support/setupDBClientConfig";
 //hey its katrinas
@@ -43,6 +44,23 @@ app.get("/pastes", async (req, res) => {
   });
 });
 connectToDBAndStartListening();
+
+app.post("/pastes", async (req, res) => {
+  const {name, pasteTitle, pasteContent} = req.body;
+  if (name.length>0 && pasteTitle.length>0 && pasteContent.length>0){
+  const text = "insert into pasteBin (name, pasteTitle, pasteContent) values ($1, $2, $3) returning *";
+  const values = [name, pasteTitle, pasteContent];
+  const response = await client.query(text, values)
+  res.status(200).json({
+    status: "success",
+    data: response.rows
+  })} else {
+    res.status(400).json({
+      status: "failed",
+      message: "must fill in input"
+    })
+  }
+})
 
 async function connectToDBAndStartListening() {
   console.log("Attempting to connect to db");
