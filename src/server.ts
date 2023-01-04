@@ -65,6 +65,17 @@ app.post("/pastes", async (req, res) => {
   }
 });
 
+app.patch("/pastes", async(req, res) => {
+  const {id, pasteContent} = req.body;
+  const text = "update pasteBin set pasteContent = $2 where id = $1";
+  const values = [id, pasteContent]
+  const response = await client.query(text, values)
+  res.status(200).json({
+    status: "success",
+    data: response.rows,
+  });
+})
+
 async function connectToDBAndStartListening() {
   console.log("Attempting to connect to db");
   await client.connect();
