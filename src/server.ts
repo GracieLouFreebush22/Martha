@@ -76,11 +76,11 @@ app.patch("/pastes", async (req, res) => {
   });
 });
 
-app.get("/comments/:id", async (req, res) => {
-  const { pasteid } = req.body.pasteid;
+app.get("/pastes/:id", async (req, res) => {
+  const { id } = req.body.id;
   try {
-  const text = "select comment from commentsDB inner join pasteBin on commentsDB.pasteID = pasteBin.id";
-  const values = [pasteid];
+  const text = "select comment from commentsDB inner join pasteBin on commentsDB.pasteID = $1";
+  const values = [id];
   const response = await client.query(text, values);
   res.status(200).json({
     status: "success",
@@ -91,6 +91,24 @@ app.get("/comments/:id", async (req, res) => {
   }
 })
 
+app.post("/comments", async (req, res) => {
+  const { pasteid, comment} = req.body;
+  if (pasteid && comment.length > 0) {
+    const text =
+      "insert into commentsDB (pasteid, comment) values ($1, $2) returning *";
+    const values = [pasteid, comment];
+    const response = await client.query(text, values);
+    res.status(200).json({
+      status: "success",
+      data: response.rows,
+    });
+  } else {
+    res.status(400).json({
+      status: "failed",
+      message: "must have both id and comment",
+    });
+  }
+});
 
 async function connectToDBAndStartListening() {
   console.log("Attempting to connect to db");
