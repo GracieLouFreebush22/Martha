@@ -65,16 +65,27 @@ app.post("/pastes", async (req, res) => {
   }
 });
 
-app.patch("/pastes", async(req, res) => {
-  const {id, pasteContent} = req.body;
+app.patch("/pastes", async (req, res) => {
+  const { id, pastecontent } = req.body;
   const text = "update pasteBin set pasteContent = $2 where id = $1";
-  const values = [id, pasteContent]
-  const response = await client.query(text, values)
+  const values = [id, pastecontent];
+  const response = await client.query(text, values);
   res.status(200).json({
     status: "success",
     data: response.rows,
   });
-})
+});
+
+app.get("/comments/:id", async (req, res) => {
+  const { pasteid } = req.body.pasteid;
+  const text = "select comment from commentsDb where id = $1";
+  const values = [pasteid];
+  const response = await client.query(text, values);
+  res.status(200).json({
+    status: "success",
+    data: response.rows,
+  });
+});
 
 async function connectToDBAndStartListening() {
   console.log("Attempting to connect to db");
