@@ -78,14 +78,19 @@ app.patch("/pastes", async (req, res) => {
 
 app.get("/comments/:id", async (req, res) => {
   const { pasteid } = req.body.pasteid;
-  const text = "select comment from commentsDb where id = $1";
+  try {
+  const text = "select comment from commentsDB inner join pasteBin on commentsDB.pasteID = pasteBin.id";
   const values = [pasteid];
   const response = await client.query(text, values);
   res.status(200).json({
     status: "success",
     data: response.rows,
-  });
-});
+  }) }
+  catch (err){
+    console.log(err)
+  }
+})
+
 
 async function connectToDBAndStartListening() {
   console.log("Attempting to connect to db");
