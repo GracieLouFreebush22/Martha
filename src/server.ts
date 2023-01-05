@@ -76,19 +76,28 @@ app.patch("/pastes", async (req, res) => {
   });
 });
 
-app.get("/pastes/:id", async (req, res) => {
-  const { id } = req.body.id;
-  try {
-  const text = "select comment from commentsDB inner join pasteBin on commentsDB.pasteID = $1";
-  const values = [id];
-  const response = await client.query(text, values);
+// app.get("/pastes/:id", async (req, res) => {
+//   const { id } = req.body.id;
+//   try {
+//   const text = "select comment from commentsDB inner join pasteBin on commentsDB.pasteID = $1 returning *";
+//   const values = [id];
+//   const response = await client.query(text, values);
+//   res.status(200).json({
+//     status: "success",
+//     data: response.rows,
+//   }) }
+//   catch (err){
+//     console.log(err)
+//   }
+// })
+
+app.get("/pastes/comments", async (req, res) => {
+  const text = "select * from commentsdb returning *";
+  const response = await client.query(text);
   res.status(200).json({
     status: "success",
-    data: response.rows,
-  }) }
-  catch (err){
-    console.log(err)
-  }
+    data: response.rows
+  })
 })
 
 app.post("/comments", async (req, res) => {
